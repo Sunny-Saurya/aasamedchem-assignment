@@ -58,6 +58,7 @@ export default function ProductList({ products }: { products: any[] }) {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Inventory</h2>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          {/* @ts-ignore */}
           <DialogTrigger asChild>
             <Button>Add Product</Button>
           </DialogTrigger>
@@ -76,7 +77,7 @@ export default function ProductList({ products }: { products: any[] }) {
               </div>
               <div className="space-y-2">
                 <Label>Base Unit Storage</Label>
-                <Select value={baseUnit} onValueChange={(v: any) => setBaseUnit(v)}>
+                <Select value={baseUnit} onValueChange={(v: any) => v && setBaseUnit(v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {Object.entries(UnitLabels).map(([key, label]) => (

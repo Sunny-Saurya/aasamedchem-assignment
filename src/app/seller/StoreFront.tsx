@@ -71,6 +71,7 @@ export default function StoreFront({ products }: { products: any[] }) {
                 }
               }}
             >
+              {/* @ts-ignore */}
               <DialogTrigger asChild>
                 <Button className="w-full">Order Now</Button>
               </DialogTrigger>
@@ -87,7 +88,7 @@ export default function StoreFront({ products }: { products: any[] }) {
                       </div>
                       <div className="space-y-2">
                         <Label>Unit</Label>
-                        <Select value={orderUnit} onValueChange={setOrderUnit}>
+                        <Select value={orderUnit} onValueChange={(v) => v && setOrderUnit(v)}>
                           <SelectTrigger><SelectValue /></SelectTrigger>
                           <SelectContent>
                             {getCompatibleUnits(p.baseUnit).map((unit) => (
