@@ -11,7 +11,7 @@ export function Navigation() {
     <nav className="border-b bg-white/50 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/" className="font-bold text-xl text-blue-600">
+          <Link href="/" className="font-bold text-xl text-red-500">
             AasaMedChem
           </Link>
           {session?.user && (
