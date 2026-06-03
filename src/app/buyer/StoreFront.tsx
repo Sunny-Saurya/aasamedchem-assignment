@@ -15,6 +15,7 @@ export default function StoreFront({ products }: { products: any[] }) {
   const [isPending, startTransition] = useTransition();
 
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [orderUnit, setOrderUnit] = useState<string>("");
   const [orderQty, setOrderQty] = useState<string>("1");
 
@@ -46,9 +47,26 @@ export default function StoreFront({ products }: { products: any[] }) {
     );
   };
 
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.sku && p.sku.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {products.map((p) => (
+    <div className="space-y-6">
+      <div className="max-w-md">
+        <Input
+          type="text"
+          placeholder="Search products by name or SKU..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="bg-white shadow-sm"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {filteredProducts.map((p) => (
         <Card key={p.id}>
           <CardHeader>
             <CardTitle>{p.name}</CardTitle>
@@ -112,11 +130,12 @@ export default function StoreFront({ products }: { products: any[] }) {
           </CardFooter>
         </Card>
       ))}
-      {products.length === 0 && (
-        <div className="col-span-full text-center py-12 text-gray-500 bg-white border rounded-lg">
-          No products available currently.
-        </div>
-      )}
+        {filteredProducts.length === 0 && (
+          <div className="col-span-full text-center py-12 text-gray-500 bg-white border rounded-lg shadow-sm">
+            No products found matching your search.
+          </div>
+        )}
+      </div>
     </div>
   );
 }

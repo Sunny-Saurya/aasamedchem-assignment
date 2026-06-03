@@ -14,6 +14,7 @@ import { UnitLabels } from "@/lib/units";
 export default function ProductList({ products }: { products: any[] }) {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   
   // Form state
   const [name, setName] = useState("");
@@ -53,10 +54,24 @@ export default function ProductList({ products }: { products: any[] }) {
     });
   };
 
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.sku && p.sku.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-xl font-semibold">Inventory</h2>
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          <Input
+            type="text"
+            placeholder="Search by name or SKU..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-white max-w-sm"
+          />
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           {/* @ts-ignore */}
           <DialogTrigger asChild>
@@ -102,6 +117,7 @@ export default function ProductList({ products }: { products: any[] }) {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       <div className="border rounded-md bg-white">
@@ -117,10 +133,10 @@ export default function ProductList({ products }: { products: any[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.length === 0 && (
-              <TableRow><TableCell colSpan={6} className="text-center py-6 text-gray-500">No products found. Add one above.</TableCell></TableRow>
+            {filteredProducts.length === 0 && (
+              <TableRow><TableCell colSpan={6} className="text-center py-6 text-gray-500">No products found.</TableCell></TableRow>
             )}
-            {products.map((p) => (
+            {filteredProducts.map((p) => (
               <TableRow key={p.id}>
                 <TableCell className="font-medium">{p.name}</TableCell>
                 <TableCell>{p.sku || "-"}</TableCell>
