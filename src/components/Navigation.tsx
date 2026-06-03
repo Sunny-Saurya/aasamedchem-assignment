@@ -21,9 +21,9 @@ export function Navigation() {
                   Admin Dashboard
                 </Link>
               )}
-              {session.user.role === "SELLER" && (
-                <Link href="/seller" className="text-sm font-medium hover:text-blue-600 transition-colors">
-                  Seller Dashboard
+              {(session.user.role === "SELLER" || session.user.role === "BUYER") && (
+                <Link href="/buyer" className="text-sm font-medium hover:text-blue-600 transition-colors">
+                  Buyer Dashboard
                 </Link>
               )}
             </div>
@@ -40,9 +40,14 @@ export function Navigation() {
               </Button>
             </div>
           ) : (
-            <Link href="/login">
-              <Button>Log in</Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/login">
+                <Button variant="outline">Log in</Button>
+              </Link>
+              <Link href="/register">
+                <Button>Sign up</Button>
+              </Link>
+            </div>
           )}
         </div>
       </div>

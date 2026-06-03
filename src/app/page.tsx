@@ -11,8 +11,8 @@ export default async function Home() {
 
   if (session.user?.role === "ADMIN") {
     redirect("/admin");
-  } else if (session.user?.role === "SELLER") {
-    redirect("/seller");
+  } else if (session.user?.role === "SELLER" || session.user?.role === "BUYER") {
+    redirect("/buyer");
   }
 
   return (

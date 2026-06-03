@@ -1,7 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,55 +8,45 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { registerUser } from "@/app/actions/auth";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        toast.error("Invalid email or password");
-      } else {
-        toast.success("Logged in successfully");
-        router.push("/");
-        router.refresh();
+    
+    startTransition(async () => {
+      try {
+        await registerUser({ email, password });
+        toast.success("Account created successfully! You can now log in.");
+        router.push("/login");
+      } catch (error: any) {
+        toast.error(error.message || "Failed to create account.");
       }
-    } catch (error) {
-      toast.error("An error occurred during login");
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (
     <div className="flex items-center justify-center min-h-[80vh]">
       <Card className="w-full max-w-md shadow-xl border-t-4 border-t-blue-600">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-bold">Create an Account</CardTitle>
           <CardDescription>
-            Enter your credentials to access the system
+            Sign up to browse products and place orders
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleRegister}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@example.com"
+                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -68,25 +57,22 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Logging in..." : "Login"}
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Creating account..." : "Sign Up"}
             </Button>
             <div className="text-sm text-center text-gray-500">
-              <p>Test Accounts:</p>
-              <p>Admin: admin@example.com / admin123</p>
-              <p>Seller: seller@example.com / seller123</p>
-            </div>
-            <div className="text-sm text-center text-gray-500 mt-4">
-              Don't have an account?{" "}
-              <Link href="/register" className="text-blue-600 hover:underline">
-                Sign up
+              Already have an account?{" "}
+              <Link href="/login" className="text-blue-600 hover:underline">
+                Log in
               </Link>
             </div>
           </CardFooter>

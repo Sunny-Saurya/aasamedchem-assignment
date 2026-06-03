@@ -27,7 +27,7 @@ export async function createProduct(data: {
   });
 
   revalidatePath("/admin");
-  revalidatePath("/seller");
+  revalidatePath("/buyer");
 }
 
 export async function deleteProduct(id: string) {
@@ -36,5 +36,5 @@ export async function deleteProduct(id: string) {
   });
 
   revalidatePath("/admin");
-  revalidatePath("/seller");
+  revalidatePath("/buyer");
 }

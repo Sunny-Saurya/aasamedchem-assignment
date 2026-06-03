@@ -69,7 +69,7 @@ export async function placeOrder(data: {
     }
   });
 
-  revalidatePath("/seller");
+  revalidatePath("/buyer");
   revalidatePath("/admin");
   return order.id;
 }

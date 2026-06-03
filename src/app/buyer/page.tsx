@@ -4,10 +4,10 @@ import { redirect } from "next/navigation";
 import { getProducts } from "@/app/actions/products";
 import StoreFront from "./StoreFront";
 
-export default async function SellerPage() {
+export default async function BuyerPage() {
   const session = await getServerSession(authOptions);
 
-  if (!session || session.user?.role !== "SELLER") {
+  if (!session || (session.user?.role !== "SELLER" && session.user?.role !== "BUYER")) {
     redirect("/login");
   }
 
